@@ -2,10 +2,7 @@ package Game;
 
 import java.awt.Graphics2D;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
 import javax.swing.JOptionPane;
 
 import Models.Ball;
@@ -124,7 +121,8 @@ public class GameLoop {
         }
 
         if (brickSound.isPlayComplete()) {
-            brickSound.stop();
+            brickSound.pause();
+            brickSound.restart();
         }
 
         // if all bricks hit, game over, player wins
