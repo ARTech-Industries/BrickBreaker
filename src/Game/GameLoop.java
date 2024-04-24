@@ -22,7 +22,7 @@ public class GameLoop {
         // create game objects
         paddle = new Paddle();
 		ball = new Ball();
-		bricks = new Brick[3][6];
+		bricks = new Brick[4][6];
         numberOfBricksHit = 0;
 		
 		int brickWidth = 120;
