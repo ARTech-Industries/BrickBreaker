@@ -13,6 +13,7 @@ public class Window {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setBackground(Color.decode("#cfcfcf"));
     }
 
     public static void setTitle(String title) {
@@ -23,9 +24,9 @@ public class Window {
         window.setSize(width, height);
         window.setLocationRelativeTo(null);
     }
-    
+
     public static void setResizeable(boolean isResizeable) {
-    	window.setResizable(isResizeable);
+        window.setResizable(isResizeable);
     }
 
     public static void setContentPane(JPanel panel) {
