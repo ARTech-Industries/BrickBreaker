@@ -20,7 +20,7 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		Window.setTitle("Brick Breaker");
 		setDoubleBuffered(true);
-		gameLoop = new GameLoop();
+		gameLoop = new GameLoop(this);
 
 		// every tick of the timer is a frame of the game
 		// tells game loop to update and draw itself every tick
@@ -36,7 +36,8 @@ public class GamePanel extends JPanel {
 		// keyboard key press detection
 		this.addKeyListener(new KeyAdapter() {
 
-			// will tell game loop whether the player has the A key down (move paddle left) or the D key down (move paddle right)
+			// will tell game loop whether the player has the A key down (move paddle left)
+			// or the D key down (move paddle right)
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_A) {
@@ -47,7 +48,8 @@ public class GamePanel extends JPanel {
 				}
 			}
 
-			// will tell game loop whether the player has released the move keys, which signals that the paddle should stop moving
+			// will tell game loop whether the player has released the move keys, which
+			// signals that the paddle should stop moving
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_A) {
@@ -69,7 +71,8 @@ public class GamePanel extends JPanel {
 	}
 
 	public void startGame() {
-		// set static vars for panel width and height for GameLoop to use whenever needed
+		// set static vars for panel width and height for GameLoop to use whenever
+		// needed
 		HEIGHT = getHeight();
 		WIDTH = getWidth();
 
@@ -90,6 +93,5 @@ public class GamePanel extends JPanel {
 		// tell game loop to draw its desired graphics to the screen
 		gameLoop.draw(graphics);
 	}
-	
-	
+
 }
