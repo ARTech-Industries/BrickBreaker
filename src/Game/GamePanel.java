@@ -45,6 +45,9 @@ public class GamePanel extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 					gameLoop.setDirectionPressed(Direction.RIGHT);
 				}
+				if (e.getKeyCode() == KeyEvent.VK_P) {
+					gameLoop.togglePause();
+				}
 			}
 
 			// will tell game loop whether the player has released the move keys, which signals that the paddle should stop moving
