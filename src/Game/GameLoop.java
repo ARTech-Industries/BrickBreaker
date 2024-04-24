@@ -1,6 +1,9 @@
 package Game;
 
 import java.awt.Graphics2D;
+
+import javax.swing.JOptionPane;
+
 import Models.Ball;
 import Models.Brick;
 import Models.Paddle;
@@ -15,7 +18,12 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	private int numberOfBricksHit;
     private CollisionHandler collisionHandler;
+    private GamePanel gp;
     
+    public GameLoop(GamePanel gp){
+        this.gp = gp;
+    }
+
     // called once on game start
     // sets up all game objects in preparation for the game to be played
     public void setup() {
@@ -95,11 +103,6 @@ public class GameLoop {
             numberOfBricksHit++;
         }
 
-        // if all bricks hit, game over, player wins
-        if (allBricksHit()) {
-            System.exit(0);
-        }
-
         // move ball either left or right based on its current x direction
         ball.moveX();
         
@@ -126,6 +129,10 @@ public class GameLoop {
 
         // if all bricks hit, game over, player wins
         if (allBricksHit()) {
+            System.out.println("Player has completed this level.");
+
+            JOptionPane.showMessageDialog(gp,"You win!");
+
             System.exit(1);
         }
         
