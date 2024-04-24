@@ -25,6 +25,7 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	public static int numberOfBricksHit, lives;
     private CollisionHandler collisionHandler;
+    private boolean paused;
     private GamePanel gp;
     
     public GameLoop(GamePanel gp){
@@ -88,22 +89,24 @@ public class GameLoop {
 
     // called every frame while the game runs
     public void update() {
-        // if a direction is being pressed (either left or right), move paddle
-        // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
-        if (directionPressed != null) {
-            if (directionPressed == Direction.LEFT) {
-                paddle.moveLeft();
-                if (ball.intersects(paddle)) {
-                    ball.setXLocation(paddle.getXLocation() - ball.getWidth());
-                }
-            } 
-            else if (directionPressed == Direction.RIGHT) {
-                paddle.moveRight();
-                if (ball.intersects(paddle)) {
-                    ball.setXLocation(paddle.getXLocation() + paddle.getWidth());
+        // only runs game behavior when the game is unpaused
+        if(!paused) {
+                // if a direction is being pressed (either left or right), move paddle
+                // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
+            if (directionPressed != null) {
+                if (directionPressed == Direction.LEFT) {
+                    paddle.moveLeft();
+                    if (ball.intersects(paddle)) {
+                        ball.setXLocation(paddle.getXLocation() - ball.getWidth());
+                    }
+                } 
+                else if (directionPressed == Direction.RIGHT) {
+                    paddle.moveRight();
+                    if (ball.intersects(paddle)) {
+                        ball.setXLocation(paddle.getXLocation() + paddle.getWidth());
+                    }
                 }
             }
-        }
 
         // move ball either up or down based on its current y direction
         ball.moveY();
@@ -173,6 +176,7 @@ public class GameLoop {
             }
 
         }
+    }
 
     }
 
@@ -213,6 +217,10 @@ public class GameLoop {
     // GamePanel file uses this to tell GameLoop which direction was pressed (left or right)
     public void setDirectionPressed(Direction directionPressed) {
         this.directionPressed = directionPressed;
+    }
+
+    public void togglePause(){
+        paused = !paused;
     }
 
     //get lives
