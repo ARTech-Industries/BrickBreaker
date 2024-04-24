@@ -2,6 +2,10 @@ package Game;
 
 import java.awt.Graphics2D;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.swing.JOptionPane;
 
 import Models.Ball;
@@ -39,6 +43,19 @@ public class GameLoop {
 		int verticalSpacing = 5;
 		int spacingFromWallX = 20;
 		int spacingFromWallY = 5;
+
+
+        try{
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(GameLoop.class.getResource("Truth.wav"));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            clip.start();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
 		
         // create brick for each slot available in 2D array
         totalNumberOfBricks = 0;
