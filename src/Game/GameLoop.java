@@ -1,18 +1,14 @@
 package Game;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.File;
-
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
 
 import Models.Ball;
 import Models.Brick;
@@ -30,7 +26,7 @@ public class GameLoop {
 	private Direction directionPressed;
 	private Brick[][] bricks;
 	private int totalNumberOfBricks;
-	private int numberOfBricksHit;
+	public static int numberOfBricksHit, lives;
     private CollisionHandler collisionHandler;
     private boolean paused;
     private GamePanel gp;
@@ -47,6 +43,7 @@ public class GameLoop {
 		ball = new Ball();
 		bricks = new Brick[6][6];
         numberOfBricksHit = 0;
+        lives = 3;
 		
 		int brickWidth = 120;
 		int brickHeight = 20;
@@ -99,8 +96,9 @@ public class GameLoop {
     public void update() {
         // only runs game behavior when the game is unpaused
         if(!paused) {
-            // if a direction is being pressed (either left or right), move paddle
-            // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
+
+                // if a direction is being pressed (either left or right), move paddle
+                // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
             if (directionPressed != null) {
                 if (directionPressed == Direction.LEFT) {
                     paddle.moveLeft();
@@ -165,15 +163,29 @@ public class GameLoop {
 
                 JOptionPane.showMessageDialog(gp,"You win!");
 
-                System.exit(1);
-            }
-            
-            // if ball hits bottom of the screen, game over, player loses
-            if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
+
+            System.exit(1);
+        }
+        
+        // if ball hits bottom of the screen, game over, player loses
+        if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
+            if(lives > 1){
+                //subtract lives
+                lives--;
+                System.out.println(lives);
+                //reset ball to paddle
+                int paddleX2 = paddle.getXLocation() + paddle.getWidth();
+		        int difference = paddleX2 - paddle.getXLocation();
+                ball.setXLocation(paddle.getXLocation() + (difference / 2) - (ball.getWidth() / 2));
+		        ball.setYLocation(paddle.getYLocation() - ball.getHeight() - 5);
+            }else{
                 System.exit(0);
             }
+
         }
         // TODO: if adding a pause screen visual, do so here in an else statement
+    }
+
     }
 
     // draws game graphics to the screen
@@ -190,14 +202,20 @@ public class GameLoop {
 				}
 			}
 		}
+
          // Display the score
     graphics.setColor(Color.BLACK); // Set the color for the score text
     graphics.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font for the score text
     graphics.drawString("Score: " + numberOfBricksHit, 10, GamePanel.HEIGHT - 50); // Draw the score text in the bottom left 
+
         
         if(paused) {
            showPauseScreen(graphics); 
         }
+
+    //display Lives
+     graphics.drawString("Lives: "+ lives, 10, GamePanel.HEIGHT - 70);;
+
     }
 
     // returns if all bricks have been hit yet or not
@@ -214,8 +232,8 @@ public class GameLoop {
         this.directionPressed = directionPressed;
     }
 
-    // toggles between paused and unpaused (unpause if paused, pause if unpaused)
-    public void togglePause() {
+
+    public void togglePause(){
         paused = !paused;
     }
 
@@ -233,4 +251,11 @@ public class GameLoop {
             graphics.drawString("MOVE LEFT: A", 310, 375);
 
     }
+
+    //get lives
+    public static int getLives(){
+        return lives;
+    }
+  
 }
+
