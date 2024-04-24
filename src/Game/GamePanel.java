@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import GUIControls.Window;
@@ -24,7 +26,7 @@ public class GamePanel extends JPanel {
 
 		// every tick of the timer is a frame of the game
 		// tells game loop to update and draw itself every tick
-		timer = new Timer(1, new ActionListener() {
+		timer = new Timer(10, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -32,6 +34,9 @@ public class GamePanel extends JPanel {
 				repaint();
 			}
 		});
+
+	
+
 
 		// keyboard key press detection
 		this.addKeyListener(new KeyAdapter() {

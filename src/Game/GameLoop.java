@@ -1,6 +1,9 @@
 package Game;
 
 import java.awt.Graphics2D;
+
+import javax.swing.JLabel;
+
 import Models.Ball;
 import Models.Brick;
 import Models.Paddle;
@@ -13,7 +16,7 @@ public class GameLoop {
 	private Direction directionPressed;
 	private Brick[][] bricks;
 	private int totalNumberOfBricks;
-	private int numberOfBricksHit;
+	public static int numberOfBricksHit, lives;
     private CollisionHandler collisionHandler;
     
     // called once on game start
@@ -24,6 +27,7 @@ public class GameLoop {
 		ball = new Ball();
 		bricks = new Brick[3][6];
         numberOfBricksHit = 0;
+        lives = 3;
 		
 		int brickWidth = 120;
 		int brickHeight = 20;
@@ -131,8 +135,21 @@ public class GameLoop {
         
         // if ball hits bottom of the screen, game over, player loses
         if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
-            System.exit(0);
+            if(lives > 0){
+                //subtract lives
+                lives--;
+                System.out.println(lives);
+                //reset ball to paddle
+                int paddleX2 = paddle.getXLocation() + paddle.getWidth();
+		        int difference = paddleX2 - paddle.getXLocation();
+                ball.setXLocation(paddle.getXLocation() + (difference / 2) - (ball.getWidth() / 2));
+		        ball.setYLocation(paddle.getYLocation() - ball.getHeight() - 5);
+            }else{
+                System.exit(0);
+            }
+
         }
+
     }
 
     // draws game graphics to the screen
@@ -149,6 +166,7 @@ public class GameLoop {
 				}
 			}
 		}
+        
     }
 
     // returns if all bricks have been hit yet or not
@@ -164,4 +182,11 @@ public class GameLoop {
     public void setDirectionPressed(Direction directionPressed) {
         this.directionPressed = directionPressed;
     }
+
+    //get lives
+    public static int getLives(){
+        return lives;
+    }
+    
 }
+
