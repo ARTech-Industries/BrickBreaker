@@ -24,7 +24,7 @@ public class GamePanel extends JPanel {
 
 		// every tick of the timer is a frame of the game
 		// tells game loop to update and draw itself every tick
-		timer = new Timer(1, new ActionListener() {
+		timer = new Timer(20, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
