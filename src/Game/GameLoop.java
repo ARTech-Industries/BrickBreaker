@@ -13,6 +13,9 @@ import Models.Brick;
 import Models.Paddle;
 import Utils.Axis;
 import Utils.Direction;
+import java.awt.Color;
+import java.awt.Font;
+
 
 public class GameLoop {
 	private Paddle paddle;
@@ -164,7 +167,7 @@ public class GameLoop {
         // draw paddle and ball rectangle graphics to screen
         paddle.draw(graphics);
 		ball.draw(graphics);
-
+        
         // draw each brick to the screen that hasn't yet been hit
 		for (Brick[] brickArray : bricks) {
 			for (Brick brick : brickArray) {
@@ -173,6 +176,11 @@ public class GameLoop {
 				}
 			}
 		}
+         // Display the score
+    graphics.setColor(Color.BLACK); // Set the color for the score text
+    graphics.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font for the score text
+    graphics.drawString("Score: " + numberOfBricksHit, 10, GamePanel.HEIGHT - 50); // Draw the score text in the bottom left 
+
     }
 
     // returns if all bricks have been hit yet or not
