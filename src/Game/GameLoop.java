@@ -16,7 +16,7 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	private int numberOfBricksHit;
     private CollisionHandler collisionHandler;
-    private final Sound brickSound = new Sound("Assets/brick.mp3", false);
+    private final Sound brickSound = new Sound("src/Assets/brick.wav", false);
     
     // called once on game start
     // sets up all game objects in preparation for the game to be played
@@ -99,11 +99,12 @@ public class GameLoop {
         }
 
         if (brickSound.isPlayComplete()) {
-            brickSound.restart();
+            brickSound.stop();
         }
 
         // if all bricks hit, game over, player wins
         if (allBricksHit()) {
+            brickSound.close();
             System.exit(0);
         }
 

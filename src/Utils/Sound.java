@@ -14,7 +14,7 @@ public class Sound implements LineListener {
 
     /**
      * An object representing a sound.
-     * @param soundFileName The name of the sound file (do not include path)
+     * @param soundFileName The name of the sound file (include path)
      * @param doesSoundLoop Determines if the sound will keep playing after it has finished playing
      * @author Jacob Hogrefe
      */
@@ -28,7 +28,9 @@ public class Sound implements LineListener {
             soundClip = (Clip) AudioSystem.getLine(soundInfo);
             soundClip.addLineListener(this);
             soundClip.open(soundStream);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("Sound effect not found! Error: " + e.toString());
+        }
     }
 
     /**
@@ -48,8 +50,8 @@ public class Sound implements LineListener {
      * @author Jacob Hogrefe
      */
     public void play() {
-        System.out.println("Playing sound");
         if (soundClip != null && !doesSoundLoop) {
+            System.out.println("Playing sound");
             soundClip.start();
         } else if (soundClip != null && doesSoundLoop) {
             soundClip.loop(Clip.LOOP_CONTINUOUSLY);
