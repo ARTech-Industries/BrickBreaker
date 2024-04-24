@@ -52,12 +52,12 @@ public class GamePanel extends JPanel {
 			// signals that the paddle should stop moving
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_A) {
+				if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
 					if (gameLoop.getDirectionPressed() == Direction.LEFT) {
 						gameLoop.setDirectionPressed(null);
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_D) {
+				if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					if (gameLoop.getDirectionPressed() == Direction.RIGHT) {
 						gameLoop.setDirectionPressed(null);
 					}
