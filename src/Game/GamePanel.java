@@ -20,7 +20,7 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		Window.setTitle("Brick Breaker");
 		setDoubleBuffered(true);
-		gameLoop = new GameLoop();
+		gameLoop = new GameLoop(this);
 
 		// every tick of the timer is a frame of the game
 		// tells game loop to update and draw itself every tick
