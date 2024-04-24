@@ -6,6 +6,7 @@ import Models.Brick;
 import Models.Paddle;
 import Utils.Axis;
 import Utils.Direction;
+import Utils.Sound;
 
 public class GameLoop {
 	private Paddle paddle;
@@ -15,6 +16,7 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	private int numberOfBricksHit;
     private CollisionHandler collisionHandler;
+    private final Sound brickSound = new Sound("Assets/brick.mp3", false);
     
     // called once on game start
     // sets up all game objects in preparation for the game to be played
@@ -93,6 +95,11 @@ public class GameLoop {
         boolean isBrickYCollision = collisionHandler.brickBallCollisionHandler(Axis.Y);
         if (isBrickYCollision) {
             numberOfBricksHit++;
+            brickSound.play();
+        }
+
+        if (brickSound.isPlayComplete()) {
+            brickSound.restart();
         }
 
         // if all bricks hit, game over, player wins
