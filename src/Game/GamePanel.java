@@ -37,6 +37,7 @@ public class GamePanel extends JPanel {
 		this.addKeyListener(new KeyAdapter() {
 
 			// will tell game loop whether the player has the A key down (move paddle left) or the D key down (move paddle right)
+			// also checks to see if the P button was pressed to toggle the pause behavior
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_A) {

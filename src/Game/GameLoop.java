@@ -62,6 +62,7 @@ public class GameLoop {
 
     // called every frame while the game runs
     public void update() {
+        // only runs game behavior when the game is unpaused
         if(!paused) {
             // if a direction is being pressed (either left or right), move paddle
             // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
@@ -138,6 +139,7 @@ public class GameLoop {
                 System.exit(0);
             }
         }
+        // TODO: if adding a pause screen visual, do so here in an else statement
     }
 
     // draws game graphics to the screen
@@ -170,6 +172,7 @@ public class GameLoop {
         this.directionPressed = directionPressed;
     }
 
+    // toggles between paused and unpaused (unpause if paused, pause if unpaused)
     public void togglePause() {
         paused = !paused;
     }
