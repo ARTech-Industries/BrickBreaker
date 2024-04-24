@@ -51,7 +51,6 @@ public class Sound implements LineListener {
      */
     public void play() {
         if (soundClip != null && !doesSoundLoop) {
-            System.out.println("Playing sound");
             soundClip.start();
         } else if (soundClip != null && doesSoundLoop) {
             soundClip.loop(Clip.LOOP_CONTINUOUSLY);

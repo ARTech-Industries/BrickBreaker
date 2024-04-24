@@ -145,12 +145,13 @@ public class GameLoop {
             System.out.println("Player has completed this level.");
 
             JOptionPane.showMessageDialog(gp,"You win!");
-
+            brickSound.close();
             System.exit(1);
         }
         
         // if ball hits bottom of the screen, game over, player loses
         if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
+            brickSound.close();
             System.exit(0);
         }
     }
