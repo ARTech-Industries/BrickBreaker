@@ -25,6 +25,7 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	private int numberOfBricksHit;
     private CollisionHandler collisionHandler;
+    private boolean paused;
     private GamePanel gp;
     
     public GameLoop(GamePanel gp){
@@ -83,83 +84,89 @@ public class GameLoop {
 
         // create collision handler instance to use throughout program for detecting collisions such as the ball hitting the paddle or the ball hitting a brick
         collisionHandler = new CollisionHandler(ball, paddle, bricks);
+
+        paused = false; // start unpaused by default
     }
 
     // called every frame while the game runs
     public void update() {
-        // if a direction is being pressed (either left or right), move paddle
-        // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
-        if (directionPressed != null) {
-            if (directionPressed == Direction.LEFT) {
-                paddle.moveLeft();
-                if (ball.intersects(paddle)) {
-                    ball.setXLocation(paddle.getXLocation() - ball.getWidth());
-                }
-            } 
-            else if (directionPressed == Direction.RIGHT) {
-                paddle.moveRight();
-                if (ball.intersects(paddle)) {
-                    ball.setXLocation(paddle.getXLocation() + paddle.getWidth());
+        // only runs game behavior when the game is unpaused
+        if(!paused) {
+            // if a direction is being pressed (either left or right), move paddle
+            // if when paddle is moved, it runs into the ball, it pushes the ball over a little bit
+            if (directionPressed != null) {
+                if (directionPressed == Direction.LEFT) {
+                    paddle.moveLeft();
+                    if (ball.intersects(paddle)) {
+                        ball.setXLocation(paddle.getXLocation() - ball.getWidth());
+                    }
+                } 
+                else if (directionPressed == Direction.RIGHT) {
+                    paddle.moveRight();
+                    if (ball.intersects(paddle)) {
+                        ball.setXLocation(paddle.getXLocation() + paddle.getWidth());
+                    }
                 }
             }
+
+            // move ball either up or down based on its current y direction
+            ball.moveY();
+
+            // check if ball hit ceiling -- if so, reverse its direction so it starts to move downwards
+            // this makes it appear as if the ball is bouncing off the ceiling
+            if (ball.getYDirection() == Direction.UP && ball.getYLocation() < 0) {
+                ball.setYDirection(Direction.DOWN);
+                ball.setYLocation(0);
+            } 
+            
+            // check if ball has collided with paddle while moving downwards
+            collisionHandler.paddleBallCollisionHandler(Axis.Y);
+            
+            // check if ball has collided with any of the bricks after it has moved up or down
+            boolean isBrickYCollision = collisionHandler.brickBallCollisionHandler(Axis.Y);
+            if (isBrickYCollision) {
+                numberOfBricksHit++;
+            }
+
+            // move ball either left or right based on its current x direction
+            ball.moveX();
+            
+            // check if ball hit either the left or right walls -- if so, reverse its direction
+            // this makes it appear as if the ball is bouncing off the walls
+            if (ball.getXDirection() == Direction.LEFT && ball.getXLocation() < 0) {
+                ball.setXDirection(Direction.RIGHT);
+                ball.setXLocation(0);
+            } 
+            else if (ball.getXDirection() == Direction.RIGHT && ball.getXLocation() + ball.getWidth() > GamePanel.WIDTH) { 
+                ball.setXDirection(Direction.LEFT);
+                ball.setXLocation(GamePanel.WIDTH - ball.getWidth());
+            }
+
+            // check if ball has collided with paddle while moving left or right
+            // very rare to actually happen but here just in case :)
+            collisionHandler.paddleBallCollisionHandler(Axis.X);
+            
+            // check if ball has collided with any of the bricks after it has moved left or right
+            boolean isBrickXCollision = collisionHandler.brickBallCollisionHandler(Axis.X);
+            if (isBrickXCollision) {
+                numberOfBricksHit++;
+            }
+
+            // if all bricks hit, game over, player wins
+            if (allBricksHit()) {
+                System.out.println("Player has completed this level.");
+
+                JOptionPane.showMessageDialog(gp,"You win!");
+
+                System.exit(1);
+            }
+            
+            // if ball hits bottom of the screen, game over, player loses
+            if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
+                System.exit(0);
+            }
         }
-
-        // move ball either up or down based on its current y direction
-        ball.moveY();
-
-        // check if ball hit ceiling -- if so, reverse its direction so it starts to move downwards
-        // this makes it appear as if the ball is bouncing off the ceiling
-        if (ball.getYDirection() == Direction.UP && ball.getYLocation() < 0) {
-            ball.setYDirection(Direction.DOWN);
-            ball.setYLocation(0);
-        } 
-        
-        // check if ball has collided with paddle while moving downwards
-        collisionHandler.paddleBallCollisionHandler(Axis.Y);
-        
-        // check if ball has collided with any of the bricks after it has moved up or down
-        boolean isBrickYCollision = collisionHandler.brickBallCollisionHandler(Axis.Y);
-        if (isBrickYCollision) {
-            numberOfBricksHit++;
-        }
-
-        // move ball either left or right based on its current x direction
-        ball.moveX();
-        
-        // check if ball hit either the left or right walls -- if so, reverse its direction
-        // this makes it appear as if the ball is bouncing off the walls
-        if (ball.getXDirection() == Direction.LEFT && ball.getXLocation() < 0) {
-            ball.setXDirection(Direction.RIGHT);
-            ball.setXLocation(0);
-        } 
-        else if (ball.getXDirection() == Direction.RIGHT && ball.getXLocation() + ball.getWidth() > GamePanel.WIDTH) { 
-            ball.setXDirection(Direction.LEFT);
-            ball.setXLocation(GamePanel.WIDTH - ball.getWidth());
-        }
-
-        // check if ball has collided with paddle while moving left or right
-        // very rare to actually happen but here just in case :)
-        collisionHandler.paddleBallCollisionHandler(Axis.X);
-        
-        // check if ball has collided with any of the bricks after it has moved left or right
-        boolean isBrickXCollision = collisionHandler.brickBallCollisionHandler(Axis.X);
-        if (isBrickXCollision) {
-            numberOfBricksHit++;
-        }
-
-        // if all bricks hit, game over, player wins
-        if (allBricksHit()) {
-            System.out.println("Player has completed this level.");
-
-            JOptionPane.showMessageDialog(gp,"You win!");
-
-            System.exit(1);
-        }
-        
-        // if ball hits bottom of the screen, game over, player loses
-        if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
-            System.exit(0);
-        }
+        // TODO: if adding a pause screen visual, do so here in an else statement
     }
 
     // draws game graphics to the screen
@@ -195,5 +202,10 @@ public class GameLoop {
     // GamePanel file uses this to tell GameLoop which direction was pressed (left or right)
     public void setDirectionPressed(Direction directionPressed) {
         this.directionPressed = directionPressed;
+    }
+
+    // toggles between paused and unpaused (unpause if paused, pause if unpaused)
+    public void togglePause() {
+        paused = !paused;
     }
 }
