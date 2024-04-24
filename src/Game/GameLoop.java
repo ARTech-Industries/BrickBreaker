@@ -1,14 +1,21 @@
 package Game;
 
 import java.awt.Graphics2D;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.swing.JOptionPane;
 
-import javax.swing.JLabel;
 
 import Models.Ball;
 import Models.Brick;
 import Models.Paddle;
 import Utils.Axis;
 import Utils.Direction;
+import java.awt.Color;
+import java.awt.Font;
+
 
 public class GameLoop {
 	private Paddle paddle;
@@ -18,14 +25,19 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	public static int numberOfBricksHit, lives;
     private CollisionHandler collisionHandler;
+    private GamePanel gp;
     
+    public GameLoop(GamePanel gp){
+        this.gp = gp;
+    }
+
     // called once on game start
     // sets up all game objects in preparation for the game to be played
     public void setup() {
         // create game objects
         paddle = new Paddle();
 		ball = new Ball();
-		bricks = new Brick[3][6];
+		bricks = new Brick[6][6];
         numberOfBricksHit = 0;
         lives = 3;
 		
@@ -35,6 +47,19 @@ public class GameLoop {
 		int verticalSpacing = 5;
 		int spacingFromWallX = 20;
 		int spacingFromWallY = 5;
+
+
+        try{
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(GameLoop.class.getResource("Truth.wav"));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            clip.start();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
 		
         // create brick for each slot available in 2D array
         totalNumberOfBricks = 0;
@@ -99,11 +124,6 @@ public class GameLoop {
             numberOfBricksHit++;
         }
 
-        // if all bricks hit, game over, player wins
-        if (allBricksHit()) {
-            System.exit(0);
-        }
-
         // move ball either left or right based on its current x direction
         ball.moveX();
         
@@ -130,12 +150,16 @@ public class GameLoop {
 
         // if all bricks hit, game over, player wins
         if (allBricksHit()) {
+            System.out.println("Player has completed this level.");
+
+            JOptionPane.showMessageDialog(gp,"You win!");
+
             System.exit(1);
         }
         
         // if ball hits bottom of the screen, game over, player loses
         if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
-            if(lives > 0){
+            if(lives > 1){
                 //subtract lives
                 lives--;
                 System.out.println(lives);
@@ -157,7 +181,7 @@ public class GameLoop {
         // draw paddle and ball rectangle graphics to screen
         paddle.draw(graphics);
 		ball.draw(graphics);
-
+        
         // draw each brick to the screen that hasn't yet been hit
 		for (Brick[] brickArray : bricks) {
 			for (Brick brick : brickArray) {
@@ -166,7 +190,15 @@ public class GameLoop {
 				}
 			}
 		}
-        
+
+         // Display the score
+    graphics.setColor(Color.BLACK); // Set the color for the score text
+    graphics.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font for the score text
+    graphics.drawString("Score: " + numberOfBricksHit, 10, GamePanel.HEIGHT - 50); // Draw the score text in the bottom left 
+
+    //display Lives
+     graphics.drawString("Lives: "+ lives, 10, GamePanel.HEIGHT - 70);;
+
     }
 
     // returns if all bricks have been hit yet or not
