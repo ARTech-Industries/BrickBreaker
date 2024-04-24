@@ -1,11 +1,17 @@
 package Game;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import Models.Ball;
@@ -18,7 +24,8 @@ import java.awt.Font;
 
 
 public class GameLoop {
-	private Paddle paddle;
+	private static final AudioInputStream ImageIO = null;
+    private Paddle paddle;
 	private Ball ball;
 	private Direction directionPressed;
 	private Brick[][] bricks;
@@ -187,7 +194,10 @@ public class GameLoop {
     graphics.setColor(Color.BLACK); // Set the color for the score text
     graphics.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font for the score text
     graphics.drawString("Score: " + numberOfBricksHit, 10, GamePanel.HEIGHT - 50); // Draw the score text in the bottom left 
-
+        
+        if(paused) {
+           showPauseScreen(graphics); 
+        }
     }
 
     // returns if all bricks have been hit yet or not
@@ -207,5 +217,20 @@ public class GameLoop {
     // toggles between paused and unpaused (unpause if paused, pause if unpaused)
     public void togglePause() {
         paused = !paused;
+    }
+
+    public void showPauseScreen(Graphics2D graphics) {
+            graphics.setColor(Color.BLUE); // Set the color for the rectangle
+            graphics.fillRect(200, 50, 400, 400); // Draw a rectangle at (50, 50) with width 100 and height 100
+
+            graphics.setColor(Color.WHITE);
+            graphics.drawString("Controls", 340, 75);
+
+            graphics.drawString("PAUSE/RESUME : P", 310, 175);
+
+            graphics.drawString("MOVE RIGHT: D", 310, 275);
+
+            graphics.drawString("MOVE LEFT: A", 310, 375);
+
     }
 }
