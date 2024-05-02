@@ -1,6 +1,8 @@
 package Game;
 
 import java.awt.Graphics2D;
+import java.util.Random;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -32,6 +34,18 @@ public class GameLoop {
         this.gp = gp;
     }
 
+    public Color[] getRandomColors(int amount){
+        Color[] result = new Color[amount];
+        for (int i = 0; i < amount; i++){
+        Random random = new Random();
+		int baseColor = 175;
+		int red = baseColor + random.nextInt(56);
+		int green = baseColor + random.nextInt(56);
+		int blue = baseColor + random.nextInt(56);
+        result[i] = new Color(red, green, blue);
+        }
+        return result;
+    }
     // called once on game start
     // sets up all game objects in preparation for the game to be played
     public void setup() {
@@ -49,6 +63,9 @@ public class GameLoop {
 		int spacingFromWallX = 20;
 		int spacingFromWallY = 5;
 
+        //one color for each row
+        Color[] brickRowColors = getRandomColors(6);
+
 
         try{
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(GameLoop.class.getResource("Truth.wav"));
@@ -61,14 +78,15 @@ public class GameLoop {
             e.printStackTrace();
         }
 
-		
+
         // create brick for each slot available in 2D array
         totalNumberOfBricks = 0;
 		for (int i = 0; i < bricks.length; i++) {
+            Color rowColor = brickRowColors[i];
 			for (int j = 0; j < bricks[i].length; j++) {
 				int brickXLocation = j * brickWidth + (j * horizontalSpacing) + spacingFromWallX;
 				int brickYLocation = i * brickHeight + (i * verticalSpacing) + spacingFromWallY;
-				bricks[i][j] = new Brick(brickXLocation, brickYLocation, brickWidth, brickHeight);
+				bricks[i][j] = new Brick(brickXLocation, brickYLocation, brickWidth, brickHeight, rowColor);
 				totalNumberOfBricks++;
 			}
 		}
