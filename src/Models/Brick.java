@@ -10,10 +10,10 @@ public class Brick {
 	private Rectangle brick;
 	private boolean isHit;
 
-	public Brick(int xLocation, int yLocation, int width, int height) {
+	public Brick(int xLocation, int yLocation, int width, int height, Color color) {
 		brick = new Rectangle();
 		// brick.setColor(Color.decode("#564787"));
-		brick.setColor(getRandomColor());
+		brick.setColor(color);
 		brick.setSize(width, height);
 		brick.setLocation(xLocation, yLocation);
 		brick.setBorderColor(Color.decode("#000"));
@@ -21,7 +21,7 @@ public class Brick {
 		isHit = false;
 	}
 
-	private Color getRandomColor() {
+	public Color getRandomColor() {
 		Random random = new Random();
 		int baseColor = 175;
 		int red = baseColor + random.nextInt(56);
