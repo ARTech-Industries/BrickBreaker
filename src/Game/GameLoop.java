@@ -3,10 +3,7 @@ package Game;
 import java.awt.Graphics2D;
 import java.util.Random;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
 import javax.swing.JOptionPane;
 
 
@@ -15,9 +12,9 @@ import Models.Brick;
 import Models.Paddle;
 import Utils.Axis;
 import Utils.Direction;
+import Utils.Sound;
 import java.awt.Color;
 import java.awt.Font;
-
 
 public class GameLoop {
 	private Paddle paddle;
@@ -27,6 +24,7 @@ public class GameLoop {
 	private int totalNumberOfBricks;
 	public static int numberOfBricksHit, lives;
     private CollisionHandler collisionHandler;
+    private final Sound brickSound = new Sound("src/Assets/brick.wav", false);
     private boolean paused;
     private GamePanel gp;
     
@@ -197,6 +195,76 @@ public class GameLoop {
                 System.exit(0);
             }
 
+        }
+
+        // move ball either up or down based on its current y direction
+        ball.moveY();
+
+        // check if ball hit ceiling -- if so, reverse its direction so it starts to move downwards
+        // this makes it appear as if the ball is bouncing off the ceiling
+        if (ball.getYDirection() == Direction.UP && ball.getYLocation() < 0) {
+            ball.setYDirection(Direction.DOWN);
+            ball.setYLocation(0);
+        } 
+        
+        // check if ball has collided with paddle while moving downwards
+        collisionHandler.paddleBallCollisionHandler(Axis.Y);
+        
+        // check if ball has collided with any of the bricks after it has moved up or down
+        boolean isBrickYCollision = collisionHandler.brickBallCollisionHandler(Axis.Y);
+        if (isBrickYCollision) {
+            numberOfBricksHit++;
+            brickSound.play();
+        }
+
+        if (brickSound.isPlayComplete()) {
+            brickSound.pause();
+            brickSound.restart();
+        }
+
+        // if all bricks hit, game over, player wins
+        if (allBricksHit()) {
+            brickSound.close();
+            System.exit(0);
+        }
+
+        // move ball either left or right based on its current x direction
+        ball.moveX();
+        
+        // check if ball hit either the left or right walls -- if so, reverse its direction
+        // this makes it appear as if the ball is bouncing off the walls
+        if (ball.getXDirection() == Direction.LEFT && ball.getXLocation() < 0) {
+            ball.setXDirection(Direction.RIGHT);
+            ball.setXLocation(0);
+        } 
+        else if (ball.getXDirection() == Direction.RIGHT && ball.getXLocation() + ball.getWidth() > GamePanel.WIDTH) { 
+            ball.setXDirection(Direction.LEFT);
+            ball.setXLocation(GamePanel.WIDTH - ball.getWidth());
+        }
+
+        // check if ball has collided with paddle while moving left or right
+        // very rare to actually happen but here just in case :)
+        collisionHandler.paddleBallCollisionHandler(Axis.X);
+        
+        // check if ball has collided with any of the bricks after it has moved left or right
+        boolean isBrickXCollision = collisionHandler.brickBallCollisionHandler(Axis.X);
+        if (isBrickXCollision) {
+            numberOfBricksHit++;
+        }
+
+        // if all bricks hit, game over, player wins
+        if (allBricksHit()) {
+            System.out.println("Player has completed this level.");
+
+            JOptionPane.showMessageDialog(gp,"You win!");
+            brickSound.close();
+            System.exit(1);
+        }
+        
+        // if ball hits bottom of the screen, game over, player loses
+        if (ball.getYLocation() + ball.getHeight() >= GamePanel.HEIGHT) {
+            brickSound.close();
+            System.exit(0);
         }
         // TODO: if adding a pause screen visual, do so here in an else statement
     }
